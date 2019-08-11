@@ -24,10 +24,9 @@
     "patch-publish": "is_git_branch master && yarn build && yarn publish --patch --access public && git push origin master --tags"
   },
   "dependencies": {
-    "@blendsdk/schemakit": "^0.9.5",
+    "@blendsdk/schemakit": "^0.9.6",
     "@blendsdk/stdlib": "^1.0.6",
     "chalk": "^2.4.2",
-    "ejs": "^2.6.2",
     "tslib": "^1.10.0"
   },
   "devDependencies": {
