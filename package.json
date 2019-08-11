@@ -1,0 +1,42 @@
+{
+  "name": "@blendsdk/schemakit",
+  "version": "0.9.0",
+  "description": "A code generator library for TypeScript and Node",
+  "main": "dist/index.js",
+  "author": "Gevik Babakhani <gevikb@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/blendsdk/codekit.git"
+  },
+  "keywords": [
+    "postgres",
+    "postgresql",
+    "typescript",
+    "code generator"
+  ],
+  "license": "MIT",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "rm -fR ./dist && tsc",
+    "watch": "rm -fR ./dist && tsc -w ",
+    "fiddle": "node ./dist/fiddle.js",
+    "test": "jest --detectOpenHandles",
+    "patch-publish": "is_git_branch master && yarn build && yarn publish --patch --access public && git push origin master --tags"
+  },
+  "dependencies": {
+    "@blendsdk/schemakit": "^0.9.5",
+    "@blendsdk/stdlib": "^1.0.6",
+    "chalk": "^2.4.2",
+    "ejs": "^2.6.2",
+    "tslib": "^1.10.0"
+  },
+  "devDependencies": {
+    "@blendsdk/git": "^1.0.3",
+    "@types/ejs": "^2.6.3",
+    "@types/jest": "^24.0.17",
+    "@types/node": "^12.7.1",
+    "jest": "^24.8.0",
+    "ts-jest": "^24.0.2",
+    "typescript": "^3.5.3"
+  }
+}
