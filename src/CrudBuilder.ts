@@ -198,6 +198,10 @@ function normalizeDataAccessLayerAPIConfig(table: Table | Table[], config: IData
             update: true,
             delete: true
         });
+        (config.tables[tableName] as any).insert = isNullOrUndefDefault((config.tables[tableName] as any).insert, true);
+        (config.tables[tableName] as any).select = isNullOrUndefDefault((config.tables[tableName] as any).select, true);
+        (config.tables[tableName] as any).update = isNullOrUndefDefault((config.tables[tableName] as any).update, true);
+        (config.tables[tableName] as any).delete = isNullOrUndefDefault((config.tables[tableName] as any).delete, true);
     });
     return config;
 }
