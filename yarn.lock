@@ -140,18 +140,17 @@
     shelljs "^0.8.3"
     tslib "^1.10.0"
 
-"@blendsdk/schemakit@^0.9.5":
-  version "0.9.5"
-  resolved "https://registry.yarnpkg.com/@blendsdk/schemakit/-/schemakit-0.9.5.tgz#59d0139ff23b14fb0a3cdae36c3233253c735e73"
-  integrity sha512-+4tg1zPr3MhMfixQA7SmgYC39H6X/XcQYEEUL4sstYAkSBKr9zDzJp19hgfUxuD1ueVsQ9wqwnSjPhp+9gJW/Q==
+"@blendsdk/schemakit@^0.9.6":
+  version "0.9.6"
+  resolved "https://registry.yarnpkg.com/@blendsdk/schemakit/-/schemakit-0.9.6.tgz#f22daba6055afb7df1036a883be20e461defc38b"
+  integrity sha512-gwlcvPhpq496Ex5mG3GrdheF1uKEFyZNh075nDylHkJk19IMH8kNqUm+6f4pRxeibnWcwF/x2D+fwR0z//qwmA==
   dependencies:
-    "@blendsdk/stdlib" "^1.0.5"
+    "@blendsdk/stdlib" "^1.0.6"
     chalk "^2.4.2"
-    ejs "^2.6.2"
-    pg "^7.11.0"
+    pg "^7.12.1"
     tslib "^1.10.0"
 
-"@blendsdk/stdlib@^1.0.5", "@blendsdk/stdlib@^1.0.6":
+"@blendsdk/stdlib@^1.0.6":
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/@blendsdk/stdlib/-/stdlib-1.0.6.tgz#4857a6d059902ae082bb5b32222b4809cfe31f3a"
   integrity sha512-U05wDWNenUarott5AiQw7FLsGdpV9NkjbjnT+bXIFWrHX5bbIW14p7AKVUaufizyR3ugdMI45y89PKyiR2hRVA==
@@ -382,7 +381,14 @@
   dependencies:
     "@types/jest-diff" "*"
 
-"@types/node@^12.7.1":
+"@types/mkdirp@^0.5.2":
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/@types/mkdirp/-/mkdirp-0.5.2.tgz#503aacfe5cc2703d5484326b1b27efa67a339c1f"
+  integrity sha512-U5icWpv7YnZYGsN4/cmh3WD2onMY0aJIiTE6+51TwJCttdHvtCYmkBNOobHlXwrJRL0nkH9jH4kD+1FAdMN4Tg==
+  dependencies:
+    "@types/node" "*"
+
+"@types/node@*", "@types/node@^12.7.1":
   version "12.7.1"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.7.1.tgz#3b5c3a26393c19b400844ac422bd0f631a94d69d"
   integrity sha512-aK9jxMypeSrhiYofWWBf/T7O+KwaiAHzM4sveCdWPn71lzUSMimRnKzhXDKfKwV1kWoBo2P1aGgaIYGLf9/ljw==
@@ -985,11 +991,6 @@ ecc-jsbn@~0.1.1:
   dependencies:
     jsbn "~0.1.0"
     safer-buffer "^2.1.0"
-
-ejs@^2.6.2:
-  version "2.6.2"
-  resolved "https://registry.yarnpkg.com/ejs/-/ejs-2.6.2.tgz#3a32c63d1cd16d11266cd4703b14fec4e74ab4f6"
-  integrity sha512-PcW2a0tyTuPHz3tWyYqtK6r1fZ3gp+3Sop8Ph+ZYN81Ob5rwmbHEzaqs10N3BEsaGTkh/ooniXK+WwszGlc2+Q==
 
 end-of-stream@^1.1.0:
   version "1.4.1"
@@ -2749,7 +2750,7 @@ pg-types@^2.1.0:
     postgres-date "~1.0.4"
     postgres-interval "^1.1.0"
 
-pg@^7.11.0:
+pg@^7.12.1:
   version "7.12.1"
   resolved "https://registry.yarnpkg.com/pg/-/pg-7.12.1.tgz#880636d46d2efbe0968e64e9fe0eeece8ef72a7e"
   integrity sha512-l1UuyfEvoswYfcUe6k+JaxiN+5vkOgYcVSbSuw3FvdLqDbaoa2RJo1zfJKfPsSYPFVERd4GHvX3s2PjG1asSDA==
