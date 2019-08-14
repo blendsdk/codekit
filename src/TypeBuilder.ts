@@ -4,6 +4,7 @@ import { eDBColumnType } from "@blendsdk/schemakit/dist/database/Types";
 import { camelCase } from "@blendsdk/stdlib/dist/camelCase";
 import { wrapInArray } from "@blendsdk/stdlib/dist/wrapInArray";
 import * as fs from "fs";
+import { formatCode } from "./Formater";
 
 export interface ITypeProperty {
     name: string;
@@ -119,7 +120,7 @@ export function generateInterface(
     ];
     wrapInArray<ITypeProperty>(properties).forEach(prop => {
         const type = `${prop.type}${prop.array ? "[]" : ""}`;
-        template.push("\t/**");
+        template.push("/**");
         if (prop.description) {
             template.push("\t * " + prop.description);
         }
@@ -129,7 +130,7 @@ export function generateInterface(
         template.push(`\t${prop.name}${prop.optional ? "?" : ""}: ${type};`);
     });
     template.push(`}`);
-    return template.join("\n");
+    return formatCode(template.join("\n"));
 }
 
 /**

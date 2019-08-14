@@ -27,7 +27,9 @@ export interface IGetTable1ById {
 /**
  * Gets a record from the table1 relation
  */
-export const getTable1ById = sql_query<ITable1, IGetTable1ById>("SELECT * FROM table1 WHERE id = :id",{ single: true });
+export const getTable1ById = sql_query<ITable1, IGetTable1ById>("SELECT * FROM table1 WHERE id = :id", {
+	single: true
+});
 
 /**
  * The IUpdateTable1ById interface.
@@ -46,7 +48,7 @@ export interface IUpdateTable1ById {
 /**
  * Updates a record from the table1 relation
  */
-export const updateTable1ById = sql_update<ITable1, ITable1, IUpdateTable1ById>("table1", { single: true } );
+export const updateTable1ById = sql_update<ITable1, ITable1, IUpdateTable1ById>("table1", { single: true });
 
 /**
  * The IDeleteTable1ById interface.
@@ -65,4 +67,4 @@ export interface IDeleteTable1ById {
 /**
  * Deletes a record from the table1 relation
  */
-export const deleteTable1ById = sql_delete<ITable1, IDeleteTable1ById>("table1", { single: true } );
+export const deleteTable1ById = sql_delete<ITable1, IDeleteTable1ById>("table1", { single: true });

@@ -10,6 +10,16 @@ export interface IAPIImport {
 }
 
 /**
+ * Interface for describing an "interface" component
+ *
+ * @export
+ * @interface IAPIComponent
+ */
+export interface IAPIComponent {
+    [name: string]: IAPIComponentProperty;
+}
+
+/**
  * Interface describing an API endpoint.
  *
  * @export
@@ -21,21 +31,12 @@ export interface IAPIEndpoint {
     url: string;
     request: IAPIComponent;
     controller: string;
+    middlewares?: string[];
     imports?: IAPIImport[];
     secure?: boolean;
     response: {
         [code: number]: IAPIComponent;
     };
-}
-
-/**
- * Interface for describing an "interface" component
- *
- * @export
- * @interface IAPIComponent
- */
-export interface IAPIComponent {
-    [name: string]: IAPIComponentProperty;
 }
 
 /**

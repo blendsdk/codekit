@@ -5,6 +5,8 @@ import chalk from "chalk";
 import * as fs from "fs";
 import mkdirp = require("mkdirp");
 import * as path from "path";
+import prettier from "prettier";
+import { formatCode } from "./Formater";
 import { columnsToTypeProperties, generateInterface, getInterfaceName } from "./TypeBuilder";
 
 /**
@@ -259,6 +261,6 @@ export function generateDataAccessLayer(table: Table | Table[], config?: IDataAc
             fs.writeFileSync(indexFilePath, `export * from "./${config.curdFileName}";`);
         }
         const filePath = path.join(outFolder, `${config.curdFileName}.ts`);
-        fs.writeFileSync(filePath, result[tableName].join("\n"));
+        fs.writeFileSync(filePath, formatCode(result[tableName].join("\n")));
     });
 }
