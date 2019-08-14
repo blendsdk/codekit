@@ -53,7 +53,7 @@ function columnToTypeProperty(column: Column): ITypeProperty {
         type: mapColumnType(column.getType()),
         optional: true,
         array: false
-    }
+    };
 }
 
 /**
@@ -64,7 +64,9 @@ function columnToTypeProperty(column: Column): ITypeProperty {
  * @returns {ITypeProperty[]}
  */
 export function columnsToTypeProperties(column: Column | Column[]): ITypeProperty[] {
-    return wrapInArray<Column>(column).map((c) => { return columnToTypeProperty(c) });
+    return wrapInArray<Column>(column).map(c => {
+        return columnToTypeProperty(c);
+    });
 }
 
 /**
@@ -74,7 +76,11 @@ export function columnsToTypeProperties(column: Column | Column[]): ITypePropert
  * @returns
  */
 export function generateInterfaceForTable(table: Table) {
-    return generateInterface(table.getName(), columnsToTypeProperties(table.getColumns()), `Interface describing a ${table.getName()} record.`);
+    return generateInterface(
+        table.getName(),
+        columnsToTypeProperties(table.getColumns()),
+        `Interface describing a ${table.getName()} record.`
+    );
 }
 
 /**
@@ -84,7 +90,7 @@ export function generateInterfaceForTable(table: Table) {
  * @param {string} name
  * @returns {string}
  */
-export function getInterfaceName(name:string):string {
+export function getInterfaceName(name: string): string {
     return `I${camelCase(name.replace(/\./gi, "_"))}`;
 }
 
@@ -112,14 +118,14 @@ export function generateInterface(
         `export interface ${interfaceName} {`
     ];
     wrapInArray<ITypeProperty>(properties).forEach(prop => {
-        const type = `${prop.type}${prop.array ? "[]" : ""}`
-        template.push("\t/**")
+        const type = `${prop.type}${prop.array ? "[]" : ""}`;
+        template.push("\t/**");
         if (prop.description) {
-            template.push("\t * " + prop.description)
+            template.push("\t * " + prop.description);
         }
         template.push(`\t * @type \{${type}\}`);
-        template.push(`\t * @memberof ${interfaceName}`)
-        template.push("\t */")
+        template.push(`\t * @memberof ${interfaceName}`);
+        template.push("\t */");
         template.push(`\t${prop.name}${prop.optional ? "?" : ""}: ${type};`);
     });
     template.push(`}`);

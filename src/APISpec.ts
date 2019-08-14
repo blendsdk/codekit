@@ -5,7 +5,7 @@
  * @interface IAPIImport
  */
 export interface IAPIImport {
-    name: string
+    name: string;
     from: string;
 }
 
@@ -39,7 +39,7 @@ export interface IAPIComponent {
 }
 
 /**
- * Interface for describing the properties of an "interface" 
+ * Interface for describing the properties of an "interface"
  * component
  *
  * @export
@@ -75,11 +75,11 @@ const api: IAPISpecification = {
             name: "login",
             url: "login",
             method: "post",
-            controller: 'loginController',
+            controller: "loginController",
             imports: [
                 {
-                    name: 'loginController',
-                    from: '../controllers/loginController'
+                    name: "loginController",
+                    from: "../controllers/loginController"
                 }
             ],
             request: {

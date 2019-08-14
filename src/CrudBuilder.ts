@@ -5,7 +5,7 @@ import chalk from "chalk";
 import * as fs from "fs";
 import mkdirp = require("mkdirp");
 import * as path from "path";
-import { generateInterface, columnsToTypeProperties, getInterfaceName } from "./TypeBuilder";
+import { columnsToTypeProperties, generateInterface, getInterfaceName } from "./TypeBuilder";
 
 /**
  * Interface for configuring a an IDataAccessLayerTable
@@ -104,10 +104,12 @@ export function createSelectByPrimaryKey(table: Table) {
 /**
  * Gets a record from the ${tableName} relation
  */
-export const ${methodName} = sql_query<${retInterface}, ${inpInterface}>(${sql},{ single: true });`;
-    return [generateInterface(methodName, columnsToTypeProperties(table.getPrimaryKey().getColumns())).trim(), "", method.trim()]
-        .join("\n")
-        .trim();
+export const ${methodName} = sql_query<${retInterface}, ${inpInterface}>(${sql},{ single: true });
+`;
+    return [
+        generateInterface(methodName, columnsToTypeProperties(table.getPrimaryKey().getColumns())).trim(),
+        method
+    ].join("\n");
 }
 
 /**
@@ -126,8 +128,9 @@ export function createInsertMethod(table: Table) {
 /**
  * Insert a record into the ${tableName} relation
  */
-export const ${methodName} = sql_insert<${retInterface}, ${inpInterface}>("${tableName}");`;
-    return method.trim();
+export const ${methodName} = sql_insert<${retInterface}, ${inpInterface}>("${tableName}");
+`;
+    return method;
 }
 
 /**
@@ -147,10 +150,11 @@ export function createDeleteByPrimaryKey(table: Table) {
 /**
  * Deletes a record from the ${tableName} relation
  */
-export const ${methodName} = sql_delete<${retInterface}, ${inpInterface}>("${tableName}", { single: true } );`;
-    return [generateInterface(methodName, columnsToTypeProperties(table.getPrimaryKey().getColumns())).trim(), "", method.trim()]
-        .join("\n")
-        .trim();
+export const ${methodName} = sql_delete<${retInterface}, ${inpInterface}>("${tableName}", { single: true } );
+`;
+    return [generateInterface(methodName, columnsToTypeProperties(table.getPrimaryKey().getColumns())), method].join(
+        "\n"
+    );
 }
 
 /**
@@ -170,10 +174,11 @@ export function createUpdateByPrimaryKey(table: Table) {
 /**
  * Updates a record from the ${tableName} relation
  */
-export const ${methodName} = sql_update<${retInterface}, ${retInterface}, ${inpInterface}>("${tableName}", { single: true } );`;
-    return [generateInterface(methodName, columnsToTypeProperties(table.getPrimaryKey().getColumns())).trim(), "", method.trim()]
-        .join("\n")
-        .trim();
+export const ${methodName} = sql_update<${retInterface}, ${retInterface}, ${inpInterface}>("${tableName}", { single: true } );
+`;
+    return [generateInterface(methodName, columnsToTypeProperties(table.getPrimaryKey().getColumns())), method].join(
+        "\n"
+    );
 }
 
 /**
@@ -213,7 +218,7 @@ function normalizeDataAccessLayerAPIConfig(table: Table | Table[], config: IData
  * @param {(Table | Table[])} table
  * @param {IDataAccessLayer} [config]
  */
-export function generateDataAccessLayerAPI(table: Table | Table[], config?: IDataAccessLayer) {
+export function generateDataAccessLayer(table: Table | Table[], config?: IDataAccessLayer) {
     config = normalizeDataAccessLayerAPIConfig(table, config);
 
     const result: { [tableName: string]: string[] } = {};
