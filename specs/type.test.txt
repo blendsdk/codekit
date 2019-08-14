@@ -1,0 +1,29 @@
+/**
+ * The ITestInterface interface.
+ *
+ * @interface ITestInterface
+ * @export
+ */
+export interface ITestInterface {
+	/**
+	 * This is property1
+	 * @type {string}
+	 * @memberof ITestInterface
+	 */
+	prop1: string;
+	/**
+	 * @type {string[]}
+	 * @memberof ITestInterface
+	 */
+	prop2: string[];
+	/**
+	 * @type {string}
+	 * @memberof ITestInterface
+	 */
+	prop3?: string;
+	/**
+	 * @type {number[]}
+	 * @memberof ITestInterface
+	 */
+	prop4?: number[];
+}

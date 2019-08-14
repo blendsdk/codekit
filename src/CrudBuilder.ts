@@ -5,7 +5,7 @@ import chalk from "chalk";
 import * as fs from "fs";
 import mkdirp = require("mkdirp");
 import * as path from "path";
-import { generateInterface } from "./TypeBuilder";
+import { generateInterface, columnsToTypeProperties } from "./TypeBuilder";
 
 /**
  * Fixes the table name by removing the "." as the schema.relayion
@@ -77,7 +77,7 @@ export function createSelectByPrimaryKey(table: Table) {
  * Gets a record from the ${tableName} relation
  */
 export const ${methodName} = sql_query<${retInterface}, ${inpInterface}>(${sql},{ single: true });`;
-    return [generateInterface(methodName, table.getPrimaryKey().getColumns()).trim(), "", method.trim()]
+    return [generateInterface(methodName, columnsToTypeProperties(table.getPrimaryKey().getColumns())).trim(), "", method.trim()]
         .join("\n")
         .trim();
 }
@@ -120,7 +120,7 @@ export function createDeleteByPrimaryKey(table: Table) {
  * Deletes a record from the ${tableName} relation
  */
 export const ${methodName} = sql_delete<${retInterface}, ${inpInterface}>("${tableName}", { single: true } );`;
-    return [generateInterface(methodName, table.getPrimaryKey().getColumns()).trim(), "", method.trim()]
+    return [generateInterface(methodName, columnsToTypeProperties(table.getPrimaryKey().getColumns())).trim(), "", method.trim()]
         .join("\n")
         .trim();
 }
@@ -143,7 +143,7 @@ export function createUpdateByPrimaryKey(table: Table) {
  * Updates a record from the ${tableName} relation
  */
 export const ${methodName} = sql_update<${retInterface}, ${retInterface}, ${inpInterface}>("${tableName}", { single: true } );`;
-    return [generateInterface(methodName, table.getPrimaryKey().getColumns()).trim(), "", method.trim()]
+    return [generateInterface(methodName, columnsToTypeProperties(table.getPrimaryKey().getColumns())).trim(), "", method.trim()]
         .join("\n")
         .trim();
 }

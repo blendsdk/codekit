@@ -5,6 +5,14 @@ import { camelCase } from "@blendsdk/stdlib/dist/camelCase";
 import { wrapInArray } from "@blendsdk/stdlib/dist/wrapInArray";
 import * as fs from "fs";
 
+export interface ITypeProperty {
+    name: string;
+    type: string;
+    array?: boolean;
+    optional?: boolean;
+    description?:string;
+}
+
 /**
  * Maps generic types to typescript types.
  *
@@ -34,18 +42,39 @@ function mapColumnType(type: eDBColumnType): string {
 }
 
 /**
+ * Maps a Column to a ITypeProperty
+ *
+ * @param {Column} column
+ * @returns {ITypeProperty}
+ */
+function columnToTypeProperty(column: Column): ITypeProperty {
+    return {
+        name: column.getName(),
+        type: mapColumnType(column.getType()),
+        optional: true,
+        array: false
+    }
+}
+
+/**
+ * Maps a collection of columns to ITypeProperys
+ *
+ * @export
+ * @param {(Column | Column[])} column
+ * @returns {ITypeProperty[]}
+ */
+export function columnsToTypeProperties(column: Column | Column[]): ITypeProperty[] {
+    return wrapInArray<Column>(column).map((c) => { return columnToTypeProperty(c) });
+}
+
+/**
  * Generates an interface
  *
  * @param {Table} table
  * @returns
  */
 function generateInterfaceForTable(table: Table) {
-    return generateInterface(table.getName(), table.getColumns());
-}
-
-export interface ITSInterfaceProperty {
-    name: string;
-    type: string;
+    return generateInterface(table.getName(), columnsToTypeProperties(table.getColumns()));
 }
 
 /**
@@ -53,29 +82,34 @@ export interface ITSInterfaceProperty {
  *
  * @export
  * @param {string} tableName
- * @param {(Column | Column[] | ITSInterfaceProperty | ITSInterfaceProperty[])} column
+ * @param {(ITypeProperty | ITypeProperty[])} properties
  * @returns
  */
 export function generateInterface(
-    tableName: string,
-    column: Column | Column[] | ITSInterfaceProperty | ITSInterfaceProperty[]
+    interfaceName: string,    
+    properties: ITypeProperty | ITypeProperty[],
+    description?:string
 ) {
-    const interfaceName = `I${camelCase(tableName.replace(/\./gi, "_"))}`,
-        template: string[] = [
+        interfaceName = `I${camelCase(interfaceName.replace(/\./gi, "_"))}`;
+        const template: string[] = [
             `/**`,
-            ` * Interface describing a ${tableName} record.`,
+            ` * ${description ? description : `The ${interfaceName} interface.`}`,
             ` *`,
             ` * @interface ${interfaceName}`,
             ` * @export`,
             ` */`,
             `export interface ${interfaceName} {`
         ];
-    wrapInArray<any>(column).forEach(column => {
-        const name = (column as Column).getName ? (column as Column).getName() : (column as ITSInterfaceProperty).name;
-        const type = (column as Column).getType
-            ? mapColumnType((column as Column).getType())
-            : (column as ITSInterfaceProperty).type;
-        template.push(`\t${name}?: ${type};`);
+    wrapInArray<ITypeProperty>(properties).forEach(prop => {
+        const type = `${prop.type}${prop.array ? "[]" : ""}`
+        template.push("\t/**")
+        if(prop.description) {            
+            template.push("\t * " + prop.description)
+        }
+        template.push(`\t * @type \{${type}\}`);
+        template.push(`\t * @memberof ${interfaceName}`)
+        template.push("\t */")
+        template.push(`\t${prop.name}${prop.optional ? "?" : ""}: ${type};`);
     });
     template.push(`}`);
     return template.join("\n");
