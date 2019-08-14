@@ -1,0 +1,43 @@
+/**
+ * Interface describing a table1 record.
+ *
+ * @interface ITable1
+ * @export
+ */
+export interface ITable1 {
+	/**
+	 * @type {number}
+	 * @memberof ITable1
+	 */
+	id?: number;
+	/**
+	 * @type {string}
+	 * @memberof ITable1
+	 */
+	column1?: string;
+	/**
+	 * @type {number}
+	 * @memberof ITable1
+	 */
+	column2?: number;
+	/**
+	 * @type {boolean}
+	 * @memberof ITable1
+	 */
+	column3?: boolean;
+	/**
+	 * @type {Date}
+	 * @memberof ITable1
+	 */
+	column4?: Date;
+	/**
+	 * @type {number}
+	 * @memberof ITable1
+	 */
+	column5?: number;
+	/**
+	 * @type {string}
+	 * @memberof ITable1
+	 */
+	column6?: string;
+}

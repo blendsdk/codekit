@@ -10,7 +10,7 @@ export interface ITypeProperty {
     type: string;
     array?: boolean;
     optional?: boolean;
-    description?:string;
+    description?: string;
 }
 
 /**
@@ -69,12 +69,12 @@ export function columnsToTypeProperties(column: Column | Column[]): ITypePropert
 
 /**
  * Generates an interface
- *
+ * @export
  * @param {Table} table
  * @returns
  */
-function generateInterfaceForTable(table: Table) {
-    return generateInterface(table.getName(), columnsToTypeProperties(table.getColumns()));
+export function generateInterfaceForTable(table: Table) {
+    return generateInterface(table.getName(), columnsToTypeProperties(table.getColumns()), `Interface describing a ${table.getName()} record.`);
 }
 
 /**
@@ -86,24 +86,24 @@ function generateInterfaceForTable(table: Table) {
  * @returns
  */
 export function generateInterface(
-    interfaceName: string,    
+    interfaceName: string,
     properties: ITypeProperty | ITypeProperty[],
-    description?:string
+    description?: string
 ) {
-        interfaceName = `I${camelCase(interfaceName.replace(/\./gi, "_"))}`;
-        const template: string[] = [
-            `/**`,
-            ` * ${description ? description : `The ${interfaceName} interface.`}`,
-            ` *`,
-            ` * @interface ${interfaceName}`,
-            ` * @export`,
-            ` */`,
-            `export interface ${interfaceName} {`
-        ];
+    interfaceName = `I${camelCase(interfaceName.replace(/\./gi, "_"))}`;
+    const template: string[] = [
+        `/**`,
+        ` * ${description ? description : `The ${interfaceName} interface.`}`,
+        ` *`,
+        ` * @interface ${interfaceName}`,
+        ` * @export`,
+        ` */`,
+        `export interface ${interfaceName} {`
+    ];
     wrapInArray<ITypeProperty>(properties).forEach(prop => {
         const type = `${prop.type}${prop.array ? "[]" : ""}`
         template.push("\t/**")
-        if(prop.description) {            
+        if (prop.description) {
             template.push("\t * " + prop.description)
         }
         template.push(`\t * @type \{${type}\}`);
@@ -123,7 +123,7 @@ export function generateInterface(
  * @param {string} outFile
  * @param {Table[]} tables
  */
-export function createTypes(outFile: string, tables: Table[]) {
+export function generateInterfacesFromTables(outFile: string, tables: Table[]) {
     const result: string[] = [];
     tables.forEach(table => {
         result.push(generateInterfaceForTable(table).trim());
