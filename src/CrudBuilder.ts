@@ -5,10 +5,38 @@ import chalk from "chalk";
 import * as fs from "fs";
 import mkdirp = require("mkdirp");
 import * as path from "path";
-import { generateInterface, columnsToTypeProperties } from "./TypeBuilder";
+import { generateInterface, columnsToTypeProperties, getInterfaceName } from "./TypeBuilder";
 
 /**
- * Fixes the table name by removing the "." as the schema.relayion
+ * Interface for configuring a an IDataAccessLayerTable
+ *
+ * @export
+ * @interface IDataAccessLayerTable
+ */
+export interface IDataAccessLayerTable {
+    insert?: boolean;
+    select?: boolean;
+    update?: boolean;
+    delete?: boolean;
+}
+
+/**
+ * Interface for configuring an IDataAccessLayer
+ *
+ * @export
+ * @interface IDataAccessLayer
+ */
+export interface IDataAccessLayer {
+    outDir?: string;
+    curdFileName?: string;
+    relativeDBTypesPackage?: string;
+    tables?: {
+        [tableName: string]: IDataAccessLayerTable | boolean;
+    };
+}
+
+/**
+ * Fixes the table name by removing the "." as the schema.relation
  * separator.
  *
  * @param {string} name
@@ -69,8 +97,8 @@ export function createSelectByPrimaryKey(table: Table) {
     const columns = table.getPrimaryKey().getColumns();
     const tableName = fixName(table.getName());
     const methodName = getMethodName("get", tableName, columns);
-    const retInterface = `I${camelCase(tableName)}`;
-    const inpInterface = `I${camelCase(methodName)}`;
+    const retInterface = getInterfaceName(tableName);
+    const inpInterface = getInterfaceName(methodName);
     const sql = `"SELECT * FROM ${tableName} WHERE ${columnsToSQLParams(columns)}"`;
     const method = `
 /**
@@ -92,8 +120,8 @@ export const ${methodName} = sql_query<${retInterface}, ${inpInterface}>(${sql},
 export function createInsertMethod(table: Table) {
     const tableName = fixName(table.getName());
     const methodName = `insertInto${camelCase(tableName)}`;
-    const retInterface = `I${camelCase(tableName)}`;
-    const inpInterface = `I${camelCase(tableName)}`;
+    const retInterface = getInterfaceName(tableName);
+    const inpInterface = getInterfaceName(tableName);
     const method = `
 /**
  * Insert a record into the ${tableName} relation
@@ -113,8 +141,8 @@ export function createDeleteByPrimaryKey(table: Table) {
     const columns = table.getPrimaryKey().getColumns();
     const tableName = fixName(table.getName());
     const methodName = getMethodName("delete", tableName, columns);
-    const retInterface = `I${camelCase(tableName)}`;
-    const inpInterface = `I${camelCase(methodName)}`;
+    const retInterface = getInterfaceName(tableName);
+    const inpInterface = getInterfaceName(methodName);
     const method = `
 /**
  * Deletes a record from the ${tableName} relation
@@ -136,8 +164,8 @@ export function createUpdateByPrimaryKey(table: Table) {
     const columns = table.getPrimaryKey().getColumns();
     const tableName = fixName(table.getName());
     const methodName = getMethodName("update", tableName, columns);
-    const retInterface = `I${camelCase(tableName)}`;
-    const inpInterface = `I${camelCase(methodName)}`;
+    const retInterface = getInterfaceName(tableName);
+    const inpInterface = getInterfaceName(methodName);
     const method = `
 /**
  * Updates a record from the ${tableName} relation
@@ -149,41 +177,13 @@ export const ${methodName} = sql_update<${retInterface}, ${retInterface}, ${inpI
 }
 
 /**
- * Interface for configuring a an IDataAccessLayerAPITable
- *
- * @export
- * @interface IDataAccessLayerAPITable
- */
-export interface IDataAccessLayerAPITable {
-    insert?: boolean;
-    select?: boolean;
-    update?: boolean;
-    delete?: boolean;
-}
-
-/**
- * Interface for configuring an IDataAccessLayerAPI
- *
- * @export
- * @interface IDataAccessLayerAPI
- */
-export interface IDataAccessLayerAPI {
-    outDir?: string;
-    curdFileName?: string;
-    relativeDBTypesPackage?: string;
-    tables?: {
-        [tableName: string]: IDataAccessLayerAPITable | boolean;
-    };
-}
-
-/**
  * Normalized the parameters for the generateDataAccessLayerAPI method.
  *
  * @param {(Table | Table[])} table
- * @param {IDataAccessLayerAPI} config
- * @returns {IDataAccessLayerAPI}
+ * @param {IDataAccessLayer} config
+ * @returns {IDataAccessLayer}
  */
-function normalizeDataAccessLayerAPIConfig(table: Table | Table[], config: IDataAccessLayerAPI): IDataAccessLayerAPI {
+function normalizeDataAccessLayerAPIConfig(table: Table | Table[], config: IDataAccessLayer): IDataAccessLayer {
     config = config || {};
     config.outDir = config.outDir || process.cwd();
     config.relativeDBTypesPackage = config.relativeDBTypesPackage || "../dbtypes";
@@ -211,24 +211,23 @@ function normalizeDataAccessLayerAPIConfig(table: Table | Table[], config: IData
  *
  * @export
  * @param {(Table | Table[])} table
- * @param {IDataAccessLayerAPI} [config]
+ * @param {IDataAccessLayer} [config]
  */
-export function generateDataAccessLayerAPI(table: Table | Table[], config?: IDataAccessLayerAPI) {
+export function generateDataAccessLayerAPI(table: Table | Table[], config?: IDataAccessLayer) {
     config = normalizeDataAccessLayerAPIConfig(table, config);
 
     const result: { [tableName: string]: string[] } = {};
     wrapInArray<Table>(table).forEach(item => {
         const tableName = fixName(item.getName());
-        const cfg = config.tables[tableName] as IDataAccessLayerAPITable;
+        const cfg = config.tables[tableName] as IDataAccessLayerTable;
         if (cfg) {
             console.log(chalk.green(`Generating CRUD for ${tableName}`));
-            // config.indexFile.push(`export * from "./${tableName}${config.filePostfix}";`);
             result[tableName] = [
                 `/**`,
                 ` * DO NOT CHANGE THIS FILE!`,
                 ` * This file is automatically generated.`,
                 ` */`,
-                `import { I${camelCase(tableName)} } from "${config.relativeDBTypesPackage}";`,
+                `import { ${getInterfaceName(tableName)} } from "${config.relativeDBTypesPackage}";`,
                 `import { sql_insert, sql_query, sql_update, sql_delete } from "@blendsdk/sqlkit";`
             ];
 
