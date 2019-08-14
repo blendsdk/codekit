@@ -57,7 +57,7 @@ function columnToTypeProperty(column: Column): ITypeProperty {
 }
 
 /**
- * Maps a collection of columns to ITypeProperys
+ * Maps a collection of columns to ITypeProperties
  *
  * @export
  * @param {(Column | Column[])} column
@@ -78,6 +78,17 @@ export function generateInterfaceForTable(table: Table) {
 }
 
 /**
+ * Geta an interface name based on the given value
+ *
+ * @export
+ * @param {string} name
+ * @returns {string}
+ */
+export function getInterfaceName(name:string):string {
+    return `I${camelCase(name.replace(/\./gi, "_"))}`;
+}
+
+/**
  * Generates an interface
  *
  * @export
@@ -90,7 +101,7 @@ export function generateInterface(
     properties: ITypeProperty | ITypeProperty[],
     description?: string
 ) {
-    interfaceName = `I${camelCase(interfaceName.replace(/\./gi, "_"))}`;
+    interfaceName = getInterfaceName(interfaceName);
     const template: string[] = [
         `/**`,
         ` * ${description ? description : `The ${interfaceName} interface.`}`,
