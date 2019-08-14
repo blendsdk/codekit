@@ -43,15 +43,23 @@ function generateInterfaceForTable(table: Table) {
     return generateInterface(table.getName(), table.getColumns());
 }
 
+export interface ITSInterfaceProperty {
+    name: string;
+    type: string;
+}
+
 /**
  * Generates an interface
  *
  * @export
  * @param {string} tableName
- * @param {(Column | Column[])} column
+ * @param {(Column | Column[] | ITSInterfaceProperty | ITSInterfaceProperty[])} column
  * @returns
  */
-export function generateInterface(tableName: string, column: Column | Column[]) {
+export function generateInterface(
+    tableName: string,
+    column: Column | Column[] | ITSInterfaceProperty | ITSInterfaceProperty[]
+) {
     const interfaceName = `I${camelCase(tableName.replace(/\./gi, "_"))}`,
         template: string[] = [
             `/**`,
@@ -62,8 +70,12 @@ export function generateInterface(tableName: string, column: Column | Column[]) 
             ` */`,
             `export interface ${interfaceName} {`
         ];
-    wrapInArray<Column>(column).forEach(column => {
-        template.push(`\t${column.getName()}?: ${mapColumnType(column.getType())};`);
+    wrapInArray<any>(column).forEach(column => {
+        const name = (column as Column).getName ? (column as Column).getName() : (column as ITSInterfaceProperty).name;
+        const type = (column as Column).getType
+            ? mapColumnType((column as Column).getType())
+            : (column as ITSInterfaceProperty).type;
+        template.push(`\t${name}?: ${type};`);
     });
     template.push(`}`);
     return template.join("\n");
