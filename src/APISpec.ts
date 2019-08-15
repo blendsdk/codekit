@@ -1,4 +1,4 @@
-import { ITypeProperty } from './TypeBuilder';
+import { ITypeProperty } from "./TypeBuilder";
 
 /**
  * Interface describing a module import
@@ -31,6 +31,7 @@ export interface IAPIEndpoint {
     method: "get" | "post" | "patch" | "delete";
     name: string;
     url: string;
+    absoluteUrl?: boolean;
     request: IAPIComponent;
     controller: string;
     middleware?: string[];
@@ -48,8 +49,8 @@ export interface IAPIEndpoint {
  * @export
  * @interface IAPIComponentProperty
  */
-export interface IAPIComponentProperty extends Omit<ITypeProperty,"name"> {
-    message?:string;
+export interface IAPIComponentProperty extends Omit<ITypeProperty, "name"> {
+    message?: string;
 }
 
 /**

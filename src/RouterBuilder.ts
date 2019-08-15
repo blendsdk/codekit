@@ -73,11 +73,13 @@ export function generateRouter(spec: IAPISpecification, config?: IGenerateRouter
     const imports: string[] = [`import { IRoute } from "@blendsdk/express";`];
 
     forEach<IAPIEndpoint>(endpoints, (endpoint: IAPIEndpoint) => {
-        endpoint.url = ["/", spec.application, spec.version ? "v" + spec.version : "/", endpoint.url]
-            .join("/")
-            .replace(/\/\//gi, "/")
-            .replace(/\/\//gi, "/")
-            .replace(/\/\//gi, "/");
+        endpoint.url = isNullOrUndefDefault(endpoint.absoluteUrl, false)
+            ? endpoint.url
+            : ["/", spec.application, spec.version ? "v" + spec.version : "/", endpoint.url]
+                  .join("/")
+                  .replace(/\/\//gi, "/")
+                  .replace(/\/\//gi, "/")
+                  .replace(/\/\//gi, "/");
 
         // Create the imports
         wrapInArray<IAPIImport>(endpoint.imports || []).forEach(i => {
