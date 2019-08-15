@@ -31,7 +31,7 @@ export interface IAPIEndpoint {
     url: string;
     request: IAPIComponent;
     controller: string;
-    middlewares?: string[];
+    middleware?: string[];
     imports?: IAPIImport[];
     secure?: boolean;
     response: {
