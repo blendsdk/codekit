@@ -1,4 +1,5 @@
 import prettier from "prettier";
+import eol from "eol";
 
 /**
  * Formats the TS code
@@ -8,7 +9,7 @@ import prettier from "prettier";
  * @returns
  */
 export function formatCode(source) {
-    return prettier.format(source, {
+    return eol.lf(prettier.format(source, {
         semi: true,
         arrowParens: "avoid",
         parser: "typescript",
@@ -19,5 +20,5 @@ export function formatCode(source) {
         quoteProps: "as-needed",
         useTabs: true,
         trailingComma: "none"
-    });
+    }));
 }

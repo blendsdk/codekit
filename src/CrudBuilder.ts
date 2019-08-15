@@ -5,7 +5,6 @@ import chalk from "chalk";
 import * as fs from "fs";
 import mkdirp = require("mkdirp");
 import * as path from "path";
-import prettier from "prettier";
 import { formatCode } from "./Formater";
 import { columnsToTypeProperties, generateInterface, getInterfaceName } from "./TypeBuilder";
 
