@@ -151,9 +151,9 @@
     tslib "^1.10.0"
 
 "@blendsdk/stdlib@^1.0.6":
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/@blendsdk/stdlib/-/stdlib-1.0.6.tgz#4857a6d059902ae082bb5b32222b4809cfe31f3a"
-  integrity sha512-U05wDWNenUarott5AiQw7FLsGdpV9NkjbjnT+bXIFWrHX5bbIW14p7AKVUaufizyR3ugdMI45y89PKyiR2hRVA==
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/@blendsdk/stdlib/-/stdlib-1.0.7.tgz#873f28ba5731a4d06784342e75deb405fb4c815a"
+  integrity sha512-8Is+8A5dWpufp1nH99ZdUiB+kb5K2KRAsZ6ce7ZtiRiNMMsE2g39EmvzDgWgjWgZMYgCGkKCZ62ztkeuDuZKXA==
   dependencies:
     tslib "^1.10.0"
 
@@ -389,9 +389,9 @@
     "@types/node" "*"
 
 "@types/node@*", "@types/node@^12.7.1":
-  version "12.7.1"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.7.1.tgz#3b5c3a26393c19b400844ac422bd0f631a94d69d"
-  integrity sha512-aK9jxMypeSrhiYofWWBf/T7O+KwaiAHzM4sveCdWPn71lzUSMimRnKzhXDKfKwV1kWoBo2P1aGgaIYGLf9/ljw==
+  version "12.7.2"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.7.2.tgz#c4e63af5e8823ce9cc3f0b34f7b998c2171f0c44"
+  integrity sha512-dyYO+f6ihZEtNPDcWNR1fkoTDf3zAK3lAABDze3mz6POyIercH0lEUawUFXlG8xaQZmm1yEBON/4TsYv/laDYg==
 
 "@types/prettier@^1.18.2":
   version "1.18.2"
@@ -3062,9 +3062,9 @@ ret@~0.1.10:
   integrity sha512-TTlYpa+OL+vMMNG24xSlQGEJ3B/RzEfUlLct7b5G/ytav+wPrplCpVMFuwzXbkecJrb6IYo1iFb0S9v37754mg==
 
 rimraf@^2.5.4, rimraf@^2.6.1, rimraf@^2.6.3:
-  version "2.7.0"
-  resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-2.7.0.tgz#eb43198c5e2fb83b9323abee63bd87836f9a7c85"
-  integrity sha512-4Liqw7ccABzsWV5BzeZeGRSq7KWIgQYzOcmRDEwSX4WAawlQpcAFXZ1Kid72XYrjSnK5yxOS6Gez/iGusYE/Pw==
+  version "2.7.1"
+  resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-2.7.1.tgz#35797f13a7fdadc566142c29d4f07ccad483e3ec"
+  integrity sha512-uWjbaKIK3T1OSVptzX7Nl6PvQ3qAGtKEtVRjRuazjfL3Bx5eI409VZSqgND+4UNnmzLVdPj9FqFJNPqBZFve4w==
   dependencies:
     glob "^7.1.3"
 

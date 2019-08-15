@@ -1,3 +1,5 @@
+import { ITypeProperty } from './TypeBuilder';
+
 /**
  * Interface describing a module import
  *
@@ -46,11 +48,8 @@ export interface IAPIEndpoint {
  * @export
  * @interface IAPIComponentProperty
  */
-export interface IAPIComponentProperty {
-    type: string;
-    optional?: boolean;
-    array?: boolean;
-    default?: any;
+export interface IAPIComponentProperty extends Omit<ITypeProperty,"name"> {
+    message?:string;
 }
 
 /**
@@ -60,39 +59,10 @@ export interface IAPIComponentProperty {
  * @interface IAPISpecification
  */
 export interface IAPISpecification {
-    name: string;
-    version: number;
+    application?: string;
+    version?: number;
     endpoints?: IAPIEndpoint[];
     components?: {
         [name: string]: IAPIComponent;
     };
 }
-
-const api: IAPISpecification = {
-    name: "api",
-    version: 1,
-    endpoints: [
-        {
-            name: "login",
-            url: "login",
-            method: "post",
-            controller: "loginController",
-            imports: [
-                {
-                    name: "loginController",
-                    from: "../controllers/loginController"
-                }
-            ],
-            request: {
-                username: { type: "string" },
-                password: { type: "string" }
-            },
-            response: {
-                200: {},
-                400: {},
-                404: {},
-                500: {}
-            }
-        }
-    ]
-};
