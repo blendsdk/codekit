@@ -76,7 +76,7 @@ export const api: IAPISpecification = {
 
 
 import { generateRouter } from '../RouterBuilder';
-test("generate router", () => {
+test("generate router", () => {    
     generateRouter(api, {
         routerOutFile:"src/tests/_delete_apiRouter.ts",  
         typesOutFile: ["src/tests/_delete_apiTypes.ts","src/tests/_delete_apiTypes1.ts"]
