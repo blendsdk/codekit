@@ -1,12 +1,12 @@
-import { IAPISpecification, IAPIComponent, IAPIComponentProperty, IAPIEndpoint, IAPIImport } from './APISpec';
-import { forEach, wrapInArray, isNullOrUndefDefault, camelCase, ucFirst } from '@blendsdk/stdlib';
-import { generateInterface, ITypeProperty } from './TypeBuilder';
+import { camelCase, forEach, isNullOrUndefDefault, ucFirst, wrapInArray } from "@blendsdk/stdlib";
 import * as fs from "fs";
-import { formatCode } from './Formater';
+import { IAPIComponent, IAPIComponentProperty, IAPIEndpoint, IAPIImport, IAPISpecification } from "./APISpec";
+import { formatCode } from "./Formater";
+import { generateInterface, ITypeProperty } from "./TypeBuilder";
 
 export interface IGenerateRouter {
     routerOutFile: string;
-    typesOutFile:string | string[];
+    typesOutFile: string | string[];
 }
 
 function componentToTypeProperty(component: IAPIComponent): ITypeProperty[] {
@@ -25,15 +25,15 @@ function createImport(imports: IAPIImport): string {
 function generateRouteParameters(params: IAPIComponent): string {
     const result: string[] = [];
     forEach<IAPIComponentProperty>(params, (param, name: string) => {
-        const part:string[] = [];
+        const part: string[] = [];
         part.push(`${name} : {`);
-        if(param.message !== undefined) {
+        if (param.message !== undefined) {
             part.push(`message: "${param.message}",`);
         }
-        if(param.array !== undefined) {
+        if (param.array !== undefined) {
             part.push(`array: ${param.array},`);
         }
-        if(param.optional !== undefined) {
+        if (param.optional !== undefined) {
             part.push(`optional: ${param.optional},`);
         }
         part.push(`type:"${param.type}"`);
@@ -49,45 +49,42 @@ function createRoute(route: IAPIEndpoint): string {
     result.push(`method:"${route.method}",`);
     result.push(`endpoint:"${route.url}",`);
     result.push(`controller:${route.controller},`);
-    result.push(`secure:${route.secure || true},`);
+    result.push(`secure:${isNullOrUndefDefault(route.secure, true)},`);
     if (route.request && Object.keys(route.request).length !== 0) {
         result.push(`parameters:\{${generateRouteParameters(route.request)}\}`);
     }
     result.push("}");
-    return result.join("\n")
+    return result.join("\n");
 }
 
 export function generateRouter(spec: IAPISpecification, config?: IGenerateRouter) {
-
     // spec.version = spec.version || ;
-    spec.application = spec.application || '';    
+    spec.application = spec.application || "";
     config = config || { routerOutFile: undefined, typesOutFile: undefined };
     config.routerOutFile = isNullOrUndefDefault(config.routerOutFile, "router.ts");
     config.typesOutFile = isNullOrUndefDefault(config.typesOutFile, "types.ts");
-    const variableName =camelCase(`${spec.application}_routes`);
-    
+    const variableName = camelCase(`${spec.application}_routes`);
+
     const result: string[] = [];
     const components = spec.components || {};
     const endpoints = spec.endpoints || [];
     const routes: string[] = [];
-    const types:string[] = [];
-    const imports: string[] = [
-        `import { IRoute } from "@blendsdk/express";`
-    ];
+    const types: string[] = [];
+    const imports: string[] = [`import { IRoute } from "@blendsdk/express";`];
 
     forEach<IAPIEndpoint>(endpoints, (endpoint: IAPIEndpoint) => {
-
-        endpoint.url = ["/",spec.application,(spec.version ?  "v"+ spec.version: '/'),endpoint.url].join("/")
-        .replace(/\/\//gi,'/')
-        .replace(/\/\//gi,'/')
-        .replace(/\/\//gi,'/');
+        endpoint.url = ["/", spec.application, spec.version ? "v" + spec.version : "/", endpoint.url]
+            .join("/")
+            .replace(/\/\//gi, "/")
+            .replace(/\/\//gi, "/")
+            .replace(/\/\//gi, "/");
 
         // Create the imports
-        wrapInArray<IAPIImport>(endpoint.imports || []).forEach((i) => {
+        wrapInArray<IAPIImport>(endpoint.imports || []).forEach(i => {
             imports.push(createImport(i));
-        })
+        });
         routes.push(createRoute(endpoint));
-    })
+    });
 
     result.push(imports.join("\n"));
     result.push("");
@@ -102,7 +99,7 @@ export function generateRouter(spec: IAPISpecification, config?: IGenerateRouter
     });
 
     fs.writeFileSync(config.routerOutFile, formatCode(result.join("\n")));
-    wrapInArray<string>(config.typesOutFile).forEach((fileName)=>{
+    wrapInArray<string>(config.typesOutFile).forEach(fileName => {
         fs.writeFileSync(fileName, formatCode(types.join("\n")));
-    })
+    });
 }
