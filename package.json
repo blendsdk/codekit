@@ -1,6 +1,6 @@
 {
   "name": "@blendsdk/codekit",
-  "version": "0.9.10",
+  "version": "0.9.11",
   "description": "A code generator library for TypeScript and Node",
   "main": "dist/index.js",
   "author": "Gevik Babakhani <gevikb@gmail.com>",
