@@ -5,8 +5,8 @@ import * as fs from "fs";
 import { formatCode } from './Formater';
 
 export interface IGenerateRouter {
-    variableName?: string;
-    outFile: string;
+    routerOutFile: string;
+    typesOutFile:string | string[];
 }
 
 function componentToTypeProperty(component: IAPIComponent): ITypeProperty[] {
@@ -61,14 +61,16 @@ export function generateRouter(spec: IAPISpecification, config?: IGenerateRouter
 
     // spec.version = spec.version || ;
     spec.application = spec.application || '';    
-    config = config || { outFile: undefined };
-    config.outFile = isNullOrUndefDefault(config.outFile, "router.ts");
-    config.variableName = isNullOrUndefDefault(config.variableName, camelCase(`${spec.application}_routes`));
+    config = config || { routerOutFile: undefined, typesOutFile: undefined };
+    config.routerOutFile = isNullOrUndefDefault(config.routerOutFile, "router.ts");
+    config.typesOutFile = isNullOrUndefDefault(config.typesOutFile, "types.ts");
+    const variableName =camelCase(`${spec.application}_routes`);
     
     const result: string[] = [];
     const components = spec.components || {};
     const endpoints = spec.endpoints || [];
     const routes: string[] = [];
+    const types:string[] = [];
     const imports: string[] = [
         `import { IRoute } from "@blendsdk/express";`
     ];
@@ -88,16 +90,19 @@ export function generateRouter(spec: IAPISpecification, config?: IGenerateRouter
     })
 
     result.push(imports.join("\n"));
-
-    forEach<IAPIComponent>(components, (value, name: string) => {
-        result.push(generateInterface(camelCase(`${spec.application}_${name}`), componentToTypeProperty(value)));
-    });
-
-    result.push(`const ${config.variableName}:IRoute[] = [`);
+    result.push("");
+    result.push(`const ${variableName}:IRoute[] = [`);
     result.push(routes.join(",\n"));
     result.push(`]`);
+    result.push("");
+    result.push(`export \{${variableName}\};`);
 
-    result.push(`export \{${config.variableName}\};`);
+    forEach<IAPIComponent>(components, (value, name: string) => {
+        types.push(generateInterface(camelCase(`${spec.application}_${name}`), componentToTypeProperty(value)));
+    });
 
-    fs.writeFileSync(config.outFile, formatCode(result.join("\n")));
+    fs.writeFileSync(config.routerOutFile, formatCode(result.join("\n")));
+    wrapInArray<string>(config.typesOutFile).forEach((fileName)=>{
+        fs.writeFileSync(fileName, formatCode(types.join("\n")));
+    })
 }

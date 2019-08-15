@@ -19,6 +19,11 @@ const greetResponse: IAPIComponent = {
     message: { type: "string" }
 }
 
+const errorResponse: IAPIComponent = {
+    error: { type: "boolean" },
+    message: { type: "any[]"}
+}
+
 export const api: IAPISpecification = {
     application:"api",
     version:2,
@@ -55,11 +60,13 @@ export const api: IAPISpecification = {
             ],
             request: greetRequest,
             response: {
-                200: greetRequest
+                200: greetRequest,
+                400: errorResponse
             }
         }
     ],
     components: {
+        errorResponse,
         tokenResponse,
         authorizationRequest,
         greetRequest,
@@ -71,6 +78,7 @@ export const api: IAPISpecification = {
 import { generateRouter } from '../RouterBuilder';
 test("generate router", () => {
     generateRouter(api, {
-        outFile: "src/tests/test1.ts"
+        routerOutFile:"src/tests/_delete_apiRouter.ts",  
+        typesOutFile: ["src/tests/_delete_apiTypes.ts","src/tests/_delete_apiTypes1.ts"]
     });
 });

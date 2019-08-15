@@ -4,3 +4,4 @@ src/fiddle.ts
 *.tgz
 *.log
 table1
+_delete_*
