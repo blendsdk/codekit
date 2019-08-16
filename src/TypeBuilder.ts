@@ -4,7 +4,7 @@ import { eDBColumnType } from "@blendsdk/schemakit/dist/database/Types";
 import { camelCase } from "@blendsdk/stdlib/dist/camelCase";
 import { wrapInArray } from "@blendsdk/stdlib/dist/wrapInArray";
 import * as fs from "fs";
-import { formatCode } from "./Formater";
+import { formatCode } from "./Formatter";
 
 export interface ITypeProperty {
     name: string;

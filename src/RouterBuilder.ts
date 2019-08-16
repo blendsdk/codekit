@@ -1,7 +1,7 @@
 import { camelCase, forEach, isNullOrUndefDefault, ucFirst, wrapInArray } from "@blendsdk/stdlib";
 import * as fs from "fs";
 import { IAPIComponent, IAPIComponentProperty, IAPIEndpoint, IAPIImport, IAPISpecification } from "./APISpec";
-import { formatCode } from "./Formater";
+import { formatCode } from "./Formatter";
 import { generateInterface, ITypeProperty } from "./TypeBuilder";
 
 /**

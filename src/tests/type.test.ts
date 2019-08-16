@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import { generateInterface, generateInterfaceForTable, generateInterfacesFromTables } from "../TypeBuilder";
 import { db } from "./setup";
-import { formatCode } from '../Formater';
+import { formatCode } from '../Formatter';
 
 test("simple type", () => {
     const result = generateInterface("TestInterface", [

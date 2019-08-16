@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import { generateDataAccessLayer } from "../CrudBuilder";
 import { db } from "./setup";
-import { formatCode } from '../Formater';
+import { formatCode } from '../Formatter';
 
 test("insert", () => {
     generateDataAccessLayer(db.getTables()[0], {});
