@@ -5,3 +5,4 @@ src/fiddle.ts
 *.log
 table1
 _delete_*
+temp

@@ -57,13 +57,25 @@ function createRoute(route: IAPIEndpoint): string {
     return result.join("\n");
 }
 
+/**
+ * Cleans a url by replacing // to /
+ *
+ * @param {string} url
+ * @returns {string}
+ */
+function cleanUrl(url: string): string {
+    for (let a = 0; a !== 10; a++) {
+        url = url.replace(/\/\//gi, "/");
+    }
+    return url;
+}
+
 export function generateRouter(spec: IAPISpecification, config?: IGenerateRouter) {
     // spec.version = spec.version || ;
     spec.application = spec.application || "";
     config = config || { routerOutFile: undefined, typesOutFile: undefined };
     config.routerOutFile = isNullOrUndefDefault(config.routerOutFile, "router.ts");
     config.typesOutFile = isNullOrUndefDefault(config.typesOutFile, "types.ts");
-    const variableName = camelCase(`${spec.application}_routes`);
 
     const result: string[] = [];
     const components = spec.components || {};
@@ -75,11 +87,7 @@ export function generateRouter(spec: IAPISpecification, config?: IGenerateRouter
     forEach<IAPIEndpoint>(endpoints, (endpoint: IAPIEndpoint) => {
         endpoint.url = isNullOrUndefDefault(endpoint.absoluteUrl, false)
             ? endpoint.url
-            : ["/", spec.application, spec.version ? "v" + spec.version : "/", endpoint.url]
-                  .join("/")
-                  .replace(/\/\//gi, "/")
-                  .replace(/\/\//gi, "/")
-                  .replace(/\/\//gi, "/");
+            : cleanUrl(["/", spec.application, spec.version ? "v" + spec.version : "/", endpoint.url].join("/"))
 
         // Create the imports
         wrapInArray<IAPIImport>(endpoint.imports || []).forEach(i => {
@@ -90,11 +98,11 @@ export function generateRouter(spec: IAPISpecification, config?: IGenerateRouter
 
     result.push(imports.join("\n"));
     result.push("");
-    result.push(`const ${variableName}:IRoute[] = [`);
+    result.push(`const routes:IRoute[] = [`);
     result.push(routes.join(",\n"));
     result.push(`]`);
     result.push("");
-    result.push(`export \{${variableName}\};`);
+    result.push(`export default routes;`);
 
     forEach<IAPIComponent>(components, (value, name: string) => {
         types.push(generateInterface(camelCase(`${spec.application}_${name}`), componentToTypeProperty(value)));
