@@ -17,7 +17,8 @@
   "license": "MIT",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "rm -fR ./dist ./temp && tsc",
+    "lint": "./node_modules/.bin/tslint -p ./tsconfig.json --fix",
+    "build": "rm -fR ./dist ./temp && tsc && yarn lint",
     "watch": "rm -fR ./dist ./temp && tsc -w ",
     "fiddle": "node ./dist/fiddle.js",
     "test": "rm -fR ./temp && mkdir ./temp && jest --detectOpenHandles && rm -fR ./temp",
@@ -25,7 +26,7 @@
   },
   "dependencies": {
     "@blendsdk/schemakit": "^0.9.6",
-    "@blendsdk/stdlib": "^1.0.6",
+    "@blendsdk/stdlib": "^1.0.9",
     "@types/mkdirp": "^0.5.2",
     "chalk": "^2.4.2",
     "eol": "^0.9.1",
@@ -36,11 +37,12 @@
   "devDependencies": {
     "@blendsdk/git": "^1.0.3",
     "@types/ejs": "^2.6.3",
-    "@types/jest": "^24.0.17",
-    "@types/node": "^12.7.1",
+    "@types/jest": "^24.0.18",
+    "@types/node": "^12.7.2",
     "@types/prettier": "^1.18.2",
-    "jest": "^24.8.0",
+    "jest": "^24.9.0",
     "ts-jest": "^24.0.2",
+    "tslint": "^5.19.0",
     "typescript": "^3.5.3"
   }
 }

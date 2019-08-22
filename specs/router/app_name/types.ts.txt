@@ -1,0 +1,27 @@
+/**
+ * The IApp1EndpointRequest interface.
+ *
+ * @interface IApp1EndpointRequest
+ * @export
+ */
+export interface IApp1EndpointRequest {
+	/**
+	 * @type {string}
+	 * @memberof IApp1EndpointRequest
+	 */
+	question: string;
+}
+
+/**
+ * The IApp1EndpointResponse interface.
+ *
+ * @interface IApp1EndpointResponse
+ * @export
+ */
+export interface IApp1EndpointResponse {
+	/**
+	 * @type {string}
+	 * @memberof IApp1EndpointResponse
+	 */
+	answer: string;
+}

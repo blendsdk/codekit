@@ -1,0 +1,19 @@
+import { IRoute } from "@blendsdk/express";
+import { controller1 } from "/path/to/file";
+
+const routes: IRoute[] = [
+	{
+		method: "post",
+		endpoint: "/endpoint1",
+		controller: controller1({ config: true }),
+		secure: true,
+		parameters: {
+			question: {
+				message: "parameter1 is required",
+				type: "string"
+			}
+		}
+	}
+];
+
+export default routes;

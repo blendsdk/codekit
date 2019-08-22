@@ -1,9 +1,25 @@
+import { forEach } from "@blendsdk/stdlib";
+import * as fs from "fs";
+import { IAPISpecification } from "../APISpec";
+import { formatCode } from "../Formatter";
 import { generateRouter } from "../RouterBuilder";
-import { api } from "./apispec";
+import { specs } from "./apispec";
 
-test("generate router", () => {
-    generateRouter(api, {
-        routerOutFile: "src/tests/_delete_router.ts",
-        typesOutFile: ["src/tests/_delete_types.ts"]
+forEach<IAPISpecification>(specs, (item: IAPISpecification, name: string) => {
+    test(`Router test ${name}`, () => {
+        const routerOutFile = `temp/router/${name}/router.ts`,
+            typesOutFile = `temp/router/${name}/types.ts`;
+        generateRouter(item, {
+            routerOutFile,
+            typesOutFile
+        });
+        const tests: string[] = [routerOutFile, typesOutFile];
+        tests.forEach(testFile => {
+            const spec = formatCode(
+                fs.readFileSync(testFile.replace("temp/", "specs/").replace(".ts", ".ts.txt")).toString()
+            );
+            const result = formatCode(fs.readFileSync(testFile).toString());
+            expect(result).toEqual(spec);
+        });
     });
 });

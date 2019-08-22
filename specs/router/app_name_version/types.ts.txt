@@ -1,0 +1,27 @@
+/**
+ * The ITest1EndpointRequest interface.
+ *
+ * @interface ITest1EndpointRequest
+ * @export
+ */
+export interface ITest1EndpointRequest {
+	/**
+	 * @type {string}
+	 * @memberof ITest1EndpointRequest
+	 */
+	question: string;
+}
+
+/**
+ * The ITest1EndpointResponse interface.
+ *
+ * @interface ITest1EndpointResponse
+ * @export
+ */
+export interface ITest1EndpointResponse {
+	/**
+	 * @type {string}
+	 * @memberof ITest1EndpointResponse
+	 */
+	answer: string;
+}

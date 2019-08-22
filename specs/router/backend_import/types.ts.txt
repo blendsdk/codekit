@@ -1,0 +1,27 @@
+/**
+ * The IEndpointRequest interface.
+ *
+ * @interface IEndpointRequest
+ * @export
+ */
+export interface IEndpointRequest {
+	/**
+	 * @type {string}
+	 * @memberof IEndpointRequest
+	 */
+	question: string;
+}
+
+/**
+ * The IEndpointResponse interface.
+ *
+ * @interface IEndpointResponse
+ * @export
+ */
+export interface IEndpointResponse {
+	/**
+	 * @type {string}
+	 * @memberof IEndpointResponse
+	 */
+	answer: string;
+}

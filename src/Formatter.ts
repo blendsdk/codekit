@@ -1,5 +1,5 @@
-import prettier from "prettier";
 import eol from "eol";
+import prettier from "prettier";
 
 /**
  * Formats the TS code

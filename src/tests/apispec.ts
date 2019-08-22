@@ -1,75 +1,230 @@
-import { IAPISpecification, IAPIComponent } from "../APISpec";
+import { IAPIComponent, IAPISpecification } from "../APISpec";
 
-const tokenResponse: IAPIComponent = {
-    success: { type: "boolean" },
-    token: { type: "string" }
-}
+const endpointRequest: IAPIComponent = {
+    question: { type: "string", message: "parameter1 is required" }
+};
 
-const authorizationRequest: IAPIComponent = {
-    username: { type: "string", message: "username is required" },
-    password: { type: "string", message: "password is required" },
-    languageCode: { type: "string", optional: true }
-}
+const endpointResponse: IAPIComponent = {
+    answer: { type: "string" }
+};
 
-const greetRequest: IAPIComponent = {
-    name: { type: "string", message: "name is required" }
-}
+const minimal: IAPISpecification = {
+    endpoints: []
+};
 
-const greetResponse: IAPIComponent = {
-    message: { type: "string" }
-}
-
-const errorResponse: IAPIComponent = {
-    error: { type: "boolean" },
-    message: { type: "any[]"}
-}
-
-export const api: IAPISpecification = {
-    application:"api",
-    version:2,
+const minimal_endpoint: IAPISpecification = {
     endpoints: [
         {
-            name: "login",
-            url: "login",
             method: "post",
-            controller: "loginController",
-            imports: [
-                {
-                    name: "loginController",
-                    from: "../controllers/loginController"
-                }
-            ],
-            request: authorizationRequest,
-            response: {
-                200: tokenResponse,
-                400: {},
-                404: {},
-                500: {}
-            }
-        },
-        {
-            name: "greet",
-            method: 'get',
-            url: "/hello/:name",
-            controller: "greetController",
-            imports: [
-                {
-                    name: "greetController",
-                    from: "../controllers/greetController"
-                }
-            ],
-            request: greetRequest,
-            response: {
-                200: greetRequest,
-                400: errorResponse
+            url: "/endpoint1",
+            backend: {
+                controller: "controller1",
+                requestType: endpointRequest,
+                responseType: endpointResponse
             }
         }
     ],
     components: {
-        errorResponse,
-        tokenResponse,
-        authorizationRequest,
-        greetRequest,
-        greetResponse
+        endpointRequest,
+        endpointResponse
     }
+};
+
+const app_name: IAPISpecification = {
+    application: "app1",
+    endpoints: [
+        {
+            method: "post",
+            url: "/endpoint1",
+            backend: {
+                controller: "controller1",
+                requestType: endpointRequest,
+                responseType: endpointResponse
+            }
+        }
+    ],
+    components: {
+        endpointRequest,
+        endpointResponse
+    }
+};
+
+const version: IAPISpecification = {
+    version: 3,
+    endpoints: [
+        {
+            method: "post",
+            url: "/endpoint1",
+            backend: {
+                controller: "controller1",
+                requestType: endpointRequest,
+                responseType: endpointResponse
+            }
+        }
+    ],
+    components: {
+        endpointRequest,
+        endpointResponse
+    }
+};
+
+const app_name_version: IAPISpecification = {
+    application: "test1",
+    version: 4,
+    endpoints: [
+        {
+            method: "post",
+            url: "/endpoint1",
+            backend: {
+                controller: "controller1",
+                requestType: endpointRequest,
+                responseType: endpointResponse
+            }
+        }
+    ],
+    components: {
+        endpointRequest,
+        endpointResponse
+    }
+};
+
+const controller_import: IAPISpecification = {
+    endpoints: [
+        {
+            method: "post",
+            url: "/endpoint1",
+            backend: {
+                controller: {
+                    name: "controller1",
+                    from: "/path/to/controller"
+                },
+                requestType: endpointRequest,
+                responseType: endpointResponse
+            }
+        }
+    ],
+    components: {
+        endpointRequest,
+        endpointResponse
+    }
+};
+
+const backend_import: IAPISpecification = {
+    endpoints: [
+        {
+            method: "post",
+            url: "/endpoint1",
+            backend: {
+                controller: "controller1({config:true})",
+                requestType: endpointRequest,
+                responseType: endpointResponse,
+                imports: {
+                    name: "controller1",
+                    from: "/path/to/file"
+                }
+            }
+        }
+    ],
+    components: {
+        endpointRequest,
+        endpointResponse
+    }
+};
+
+const middleware_import_single: IAPISpecification = {
+    endpoints: [
+        {
+            method: "post",
+            url: "/endpoint1",
+            backend: {
+                controller: "controller1({config:true})",
+                requestType: endpointRequest,
+                responseType: endpointResponse,
+                middleware: {
+                    name: "is_authenticated",
+                    from: "/path/to/file"
+                }
+            }
+        }
+    ],
+    components: {
+        endpointRequest,
+        endpointResponse
+    }
+};
+
+const middleware_import_multiple: IAPISpecification = {
+    endpoints: [
+        {
+            method: "post",
+            url: "/endpoint1",
+            backend: {
+                controller: "controller1({config:true})",
+                requestType: endpointRequest,
+                responseType: endpointResponse,
+                middleware: [
+                    {
+                        name: "is_authenticated",
+                        from: "/path/to/file"
+                    },
+                    {
+                        name: "check1",
+                        from: "path/to/check1"
+                    }
+                ]
+            }
+        }
+    ],
+    components: {
+        endpointRequest,
+        endpointResponse
+    }
+};
+
+const middleware_import_multiple_mixed: IAPISpecification = {
+    endpoints: [
+        {
+            method: "post",
+            url: "/endpoint1",
+            backend: {
+                controller: "controller1({config:true})",
+                requestType: endpointRequest,
+                responseType: endpointResponse,
+                middleware: [
+                    `has_role("admin")`,
+                    {
+                        name: "is_authenticated",
+                        from: "/path/to/file"
+                    },
+                    {
+                        name: "check1",
+                        from: "path/to/check1"
+                    }
+                ],
+                imports: {
+                    name: "has_role",
+                    from: "/path/to/has_role"
+                }
+            }
+        }
+    ],
+    components: {
+        endpointRequest,
+        endpointResponse
+    }
+};
+
+export const specs: {
+    [name: string]: IAPISpecification;
+} = {
+    minimal,
+    minimal_endpoint,
+    app_name,
+    version,
+    app_name_version,
+    controller_import,
+    backend_import,
+    middleware_import_single,
+    middleware_import_multiple,
+    middleware_import_multiple_mixed
 };

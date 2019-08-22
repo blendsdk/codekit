@@ -1,4 +1,13 @@
-import { camelCase, forEach, isNullOrUndefDefault, ucFirst, wrapInArray } from "@blendsdk/stdlib";
+import {
+    camelCase,
+    ensureFilePath,
+    forEach,
+    isNullOrUndef,
+    isNullOrUndefDefault,
+    isObject,
+    isString,
+    wrapInArray
+} from "@blendsdk/stdlib";
 import * as fs from "fs";
 import { IAPIComponent, IAPIComponentProperty, IAPIEndpoint, IAPIImport, IAPISpecification } from "./APISpec";
 import { formatCode } from "./Formatter";
@@ -31,13 +40,27 @@ function componentToTypeProperty(component: IAPIComponent): ITypeProperty[] {
 }
 
 /**
- * Create an `import` statement for the route controllers
+ * Check if a value is an import statement
+ *
+ * @param {*} obj
+ * @returns {boolean}
+ */
+function isImport(obj): boolean {
+    return !isNullOrUndef(obj) && isObject(obj) && obj.name && obj.from;
+}
+
+/**
+ * Creates `import` statements for the route controllers
  *
  * @param {IAPIImport} imports
  * @returns {string}
  */
-function createImport(imports: IAPIImport): string {
-    return `import { ${imports.name} } from "${imports.from}";`;
+function createImports(imports: IAPIImport | IAPIImport[], result: string[]) {
+    wrapInArray<IAPIImport>(imports || []).forEach(item => {
+        if (isImport(item)) {
+            result.push(`import { ${item.name} } from "${item.from}";`);
+        }
+    });
 }
 
 /**
@@ -74,14 +97,32 @@ function generateRouteParameters(params: IAPIComponent): string {
  * @returns {string}
  */
 function createRoute(route: IAPIEndpoint): string {
-    const result: string[] = [];
+    const result: string[] = [],
+        controller = !isNullOrUndef(route.backend.controller)
+            ? isString(route.backend.controller)
+                ? route.backend.controller
+                : (route.backend.controller as IAPIImport).name
+            : null;
     result.push("{");
     result.push(`method:"${route.method}",`);
     result.push(`endpoint:"${route.url}",`);
-    result.push(`controller:${route.controller},`);
+    result.push(`controller:${controller},`);
     result.push(`secure:${isNullOrUndefDefault(route.secure, true)},`);
-    if (route.request && Object.keys(route.request).length !== 0) {
-        result.push(`parameters:\{${generateRouteParameters(route.request)}\}`);
+    // handle the middelwares
+    if (route.backend.middleware) {
+        const items = wrapInArray(route.backend.middleware).map((item: any) => {
+            if (isString(item)) {
+                return item;
+            } else if (isImport(item)) {
+                return item.name;
+            }
+        });
+        if (items.length !== 0) {
+            result.push(`middlewares:${items.length === 1 ? items.join("") : `[${items.join(",")}]`},`);
+        }
+    }
+    if (route.backend.requestType && Object.keys(route.backend.requestType).length !== 0) {
+        result.push(`parameters:\{${generateRouteParameters(route.backend.requestType)}\}`);
     }
     result.push("}");
     return result.join("\n");
@@ -101,22 +142,34 @@ function cleanUrl(url: string): string {
 }
 
 /**
+ * Generates the endpoint url based on the endpoint configuration
+ *
+ * @param {IAPIEndpoint} endpoint
+ * @param {IAPISpecification} spec
+ * @returns
+ */
+function generateEndpointUrl(endpoint: IAPIEndpoint, spec: IAPISpecification) {
+    return isNullOrUndefDefault(endpoint.absoluteUrl, false)
+        ? endpoint.url
+        : cleanUrl(["/", spec.application, spec.version ? "v" + spec.version : "/", endpoint.url].join("/"));
+}
+
+/**
  * Generates a backend route definition and request/reponse types
- * as TypeScript interfacses
+ * as TypeScript interfaces
  *
  * @export
  * @param {IAPISpecification} spec
  * @param {IGenerateRouter} [config]
  */
 export function generateRouter(spec: IAPISpecification, config?: IGenerateRouter) {
-
     // set the defaults
     spec.application = spec.application || "";
     config = config || { routerOutFile: undefined, typesOutFile: undefined };
     config.routerOutFile = isNullOrUndefDefault(config.routerOutFile, "router.ts");
     config.typesOutFile = isNullOrUndefDefault(config.typesOutFile, "types.ts");
 
-    // results valiables declaration
+    // results variables declaration
     const result: string[] = [];
     const components = spec.components || {};
     const endpoints = spec.endpoints || [];
@@ -126,18 +179,16 @@ export function generateRouter(spec: IAPISpecification, config?: IGenerateRouter
 
     // loop to generate the endpoint definitions
     forEach<IAPIEndpoint>(endpoints, (endpoint: IAPIEndpoint) => {
-
         // normalize and fix the url
-        endpoint.url = isNullOrUndefDefault(endpoint.absoluteUrl, false)
-            ? endpoint.url
-            : cleanUrl(["/", spec.application, spec.version ? "v" + spec.version : "/", endpoint.url].join("/"))
+        endpoint.url = generateEndpointUrl(endpoint, spec);
 
-        // Create the imports
-        wrapInArray<IAPIImport>(endpoint.imports || []).forEach(i => {
-            imports.push(createImport(i));
-        });
-
-        routes.push(createRoute(endpoint));
+        if (endpoint.backend) {
+            // create imports for the backend
+            createImports(endpoint.backend.imports, imports);
+            createImports(endpoint.backend.controller as IAPIImport, imports);
+            createImports(endpoint.backend.middleware as IAPIImport, imports);
+            routes.push(createRoute(endpoint));
+        }
     });
 
     // merge the generated routes
@@ -155,8 +206,10 @@ export function generateRouter(spec: IAPISpecification, config?: IGenerateRouter
     });
 
     // write the results to files
+    ensureFilePath(config.routerOutFile);
     fs.writeFileSync(config.routerOutFile, formatCode(result.join("\n")));
     wrapInArray<string>(config.typesOutFile).forEach(fileName => {
+        ensureFilePath(fileName);
         fs.writeFileSync(fileName, formatCode(types.join("\n")));
     });
 }

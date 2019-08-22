@@ -1,0 +1,21 @@
+import { IRoute } from "@blendsdk/express";
+import { is_authenticated } from "/path/to/file";
+import { check1 } from "path/to/check1";
+
+const routes: IRoute[] = [
+	{
+		method: "post",
+		endpoint: "/endpoint1",
+		controller: controller1({ config: true }),
+		secure: true,
+		middlewares: [is_authenticated, check1],
+		parameters: {
+			question: {
+				message: "parameter1 is required",
+				type: "string"
+			}
+		}
+	}
+];
+
+export default routes;
