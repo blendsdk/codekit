@@ -1,13 +1,16 @@
 import * as fs from "fs";
 import { generateDataAccessLayer } from "../CrudBuilder";
+import { formatCode } from "../Formatter";
 import { db } from "./setup";
-import { formatCode } from '../Formatter';
 
 test("insert", () => {
-    generateDataAccessLayer(db.getTables()[0], {});
+    generateDataAccessLayer(db.getTables()[0], {
+        outDir: "./temp"
+    });
     const tests: string[][] = [
-        ["specs/crud.txt", "table1/generated.ts"],
-         ["specs/index.txt", "table1/index.ts"]];
+        ["specs/crud.txt", "temp/table1/generated.ts"],
+        ["specs/index.txt", "temp/table1/index.ts"]
+    ];
     tests.forEach(rec => {
         let [spec, result] = rec;
         spec = formatCode(fs.readFileSync(spec).toString());
